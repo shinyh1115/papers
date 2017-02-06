@@ -6,23 +6,21 @@ link_url: https://arxiv.org/abs/1409.4842
 ---
 
 - [Tensorflow](https://www.tensorflow.org/) 공개 후 우리가 가장 많이 사용하는 Conv-Net 모델.
-- 그냥 가져다 쓰기 보다는 원리를 좀 알고 쓰자는 생각에 간단하게 정리를 하는 페이지를 만든다.
-- 일단 기본 Inception 모델을 설명하지만 추가로 Inception-v4까지 모두 설명한다.
 - 다음의 논문들을 요약 정리한 것이다.
     - [Going Deeper with Convolution](https://arxiv.org/abs/1409.4842){:target="_blank"}
     - [Rethinking the Inception Architecture for Computer Vision](https://arxiv.org/abs/1512.00567){:target="_blank"}
     - [Inception-v4, Inception-RestNet and the Impact of Residual Connections on Learning](https://arxiv.org/abs/1602.07261){:target="_blank"}
     
 ## Inception. v1. (a.k.a GoogLeNet)
-- 2014년 IRSVRC 에 VGG를 간신히 꺽고(?) 1등을 차지한 모델. (GoogLeNet)
+- 2014년 IRSVRC 에 1등을 차지한 모델. (GoogLeNet)
 - 이후 Inception 이란 이름으로 논문을 발표함. (Inception의 여러 버전 중 하나가 GoogLeNet 이라 밝힘)
     - 관련 논문 : [Going deeper with convolutions](https://arxiv.org/abs/1409.4842){:target="_blank"}
 - 2012년 Alexnet 보다 12x **적은** 파라미터 수. (GoogLeNet 은 약 \\(6.8M\\) 의 파라미터 수)
 - 구글측 주장
-    - 알다시피 딥러닝은 망이 깊을수록(deep) 레이어가 넓을수록(wide) 성능이 좋다.
-    - 역시나 알다시피 현실적으로는 overfeating, vanishing 등의 문제로 실제 학습이 어렵다.
+    - 알다시피 Deep Learning은 망이 깊을수록(deep) Layer가 넓을수록(wide) 성능이 좋다.
+    - 역시나 알다시피 현실적으로는 overfeating, vanishing 등의 문제로 실제 학습이 어렵다.
     - 구현을 위한 현실적인 문제들.
-        - 신경망은 Sparsity 해야지만 좋은 성능을 낸다. (Dropout 생각해봐라)
+        - 신경망은 Sparsity 해야지만 좋은 성능을 낸다. (Dropout)
         - 논문에서는 데이터의 확률 분포를 아주 큰 신경망으로 표현할 수 있다면(신경망은 사후 분포로 취급 가능하므로),
         - 실제 높은 상관성을 가지는 출력들과 이 때 활성화되는 망내 노드들의 클러스터들의 관계를 분석하여,
         - 최적 효율의 토폴로지를 구성할 수 있다고 한다.
@@ -33,18 +31,16 @@ link_url: https://arxiv.org/abs/1409.4842
         - Arora 의 [논문](http://jmlr.org/proceedings/papers/v32/arora14.pdf){:target="_blank"} 에서 희망을 보았다.
         - 전체적으로는 망내 연결을 줄이면서(sparsity),
         - 세부적인 행렬 연산에서는 최대한 dense한 연산을 하도록 처리.
-    - GoogLeNet 은 사실 Arora [논문](http://jmlr.org/proceedings/papers/v32/arora14.pdf){:target="_blank"} 내용을 확인해보다가 구성된 모델임.
-- 잡설이 길었다.
-- Inception v1. 의 핵심은 Conv 레이어에 있음.
-    - Conv 레이어를 앞서 설명한대로 sparse 하게 연결하면서 행렬 연산 자체는 dense 하게 처리하는 모델로 구성함.
+    - GoogLeNet 은 사실 Arora [논문](http://jmlr.org/proceedings/papers/v32/arora14.pdf){:target="_blank"} 내용을 확인해보다가 구성된 모델.
+- Inception v1. 의 핵심은 Conv Layer에 있음.
+    - Conv Layer를 앞서 설명한대로 sparse 하게 연결하면서 행렬 연산 자체는 dense 하게 처리하는 모델로 구성함.
         
 ![figure.1]({{ site.baseurl }}/images/{{ page.group }}/f01.png){:class="center-block" height="350px"}
 
-- Inception v1. 은 그냥 이 그림이 핵심임.
+- Inception v1. 은 이 그림이 핵심임.
 - 일단 (a) 모델을 보자. (CONV 연산이다.)
-- 보통 다른 모델은 7x7 등 하나의 Convolution 필터로 진행을 하는데 여기서는 이런 식으로 작은 Conv 레이어 여러 개를  한 층에서 구성하는 형태를 취한다.
+- 보통 다른 모델은 7x7 등 하나의 Convolution 필터로 진행을 하는데 여기서는 이런 식으로 작은 Conv Layer 여러 개를  한 층에서 구성하는 형태를 취한다.
 - 1x1 Conv?
-    - 이제는 흔한 Conv라 다들 알 수도 있는 내용이지만 그래도 간단히 정리해둔다.
     - Conv 연산은 보통 3차원 데이터를 사용하는데 여기에 batch_size를 추가하여 4차원 데이터로 표기한다. (ex) : \\([B,W,H,C]\\)
     - 보통 Conv 연산을 통해 \\(W\\), \\(H\\)의 크기는 줄이고 \\(C\\)는 늘리는 형태를 취하게 되는데,
         - \\(W\\), \\(H\\)는 Max-Pooling 을 통해 줄인다.
@@ -68,9 +64,9 @@ link_url: https://arxiv.org/abs/1409.4842
     - 한번 정도는 진지하게 표를 살펴볼 필요가 있다.
     - 위의 값은 GoogLeNet 을 구성한 값임.
     - 입력 이미지 크기는 224x224x3 임.
-- 레이어 초반에는 인셉션 모듈이 들어가지 않는다.
-    - 얘네들은 이걸 Stem 영역이라고 부르던데.. 어쨌거나 일반적인 Conv-Net 에서 보이는 가장 단순한 Conv-Pool 스타일을 따른다.
-    - 실험을 해보니 레이어 초반에는 인셉션이 효과가 별로 없어서 이렇게 한다고 한다.
+- Layer 초반에는 Inception Module이 들어가지 않는다.
+    - 이걸 Stem 영역이라고 부른다. 적인 Conv-Net 에서 보이는 가장 단순한 Conv-Pool 스타일을 따른다.
+    - 실험을 해보니 Layer 초반에는 인셉션이 효과가 별로 없어서 이렇게 한다고 한다.
 - ''reduce'' 라고 되어 있는 값은 앞단 1x1 Conv 의 \\(C\\) (channel) 값을 의미한다.
 - 그림으로 도식화하면 다음과 같다.
 
@@ -83,21 +79,21 @@ link_url: https://arxiv.org/abs/1409.4842
 
 - 그림에서 보면 **노란색** 의 영역이 눈에 띈다.
 - 이는 *softmax* 영역으로 망 전체에 총 3 개가 있다.
-- 실제 마지막 Layer 가 진짜배기 *softmax* 레이어이고 나머지 2개는 보조 *softmax* 레이어이다.
+- 실제 마지막 Layer 가 진짜배기 *softmax* Layer이고 나머지 2개는 보조 *softmax* Layer이다.
 - 이는 망이 깊어질 때 발생하는 vanishing 문제를 해결하고자 중간 층에서도 Backprop을 수행하여 weight 갱신을 시도하는 것이다.
     - 이렇게하면 당연히 아래 쪽 weight도 좀 더 쉽게 weight가 갱신될 것이다.
-    - 물론 가장 중요한 *softmax* 레이어는 마지막 레이어에 연결된 것이므로 보조 레이어는 학습시에 비율을 반영하여 Loss 함수에 반영한다.
+    - 물론 가장 중요한 *softmax* Layer는 마지막 Layer에 연결된 것이므로 보조 Layer는 학습시에 비율을 반영하여 Loss Fuction에 반영한다.
         - 전체 Loss 값에 0.3 비율로 포함된다고 한다.
     - Incecption v2. v3에서는 보조 *softmax* 가 별로 효용 가치가 없다고 해서 맨 앞단 *softmax* 는 제거하게 된다.
     - 학습(training)시에만 사용하고 추론(inference)시에는 이 노드를 그냥 삭제해버림.
-        - 즉, 테스트 단계에서는 마지막 *softmax* 레이어만 실제로 사용함.
+        - 즉, 테스트 단계에서는 마지막 *softmax* Layer만 실제로 사용함.
         - 그래서 pre-trained model 그래프에서는 이 노드가 보이지 않는다.
         
 - 성능 결과는 다음과 같다.
 
 ![figure.5]({{ site.baseurl }}/images/{{ page.group }}/f05.png){:class="center-block" height="400px"}
 
-- 다른 Conv-Net 들과의 차이? 예를 들면 VGG 등 (주관적 견해임)
+- 다른 Conv-Net 들과의 차이? 예를 들면 VGG 등 (사람들의 주관적 견해)
     - 그냥 단순히 생각해보면 다른 모델은 conv 영역의 \\(C\\) (channel) 정보의 경우 localization 이 확실하다고 생각되는데..
         - 이건 단순하게 생각하면 동일한 filter 크기를 가지고 \\(W\\), \\(H\\) 의 크기를 줄여나가기 때문에 각 \\(C\\)가 담고 있는 정보들은,
         - 실제 이미지 데이터에서 차지하는 Localization 영향도가 \\(C\\)의 각 차원마다 동일할 것이다.
@@ -110,15 +106,15 @@ link_url: https://arxiv.org/abs/1409.4842
 ## Inception. v2. / v3.
 
 - 관련 논문 : [Rethinking the Inception Architecture for Computer Vision](https://arxiv.org/abs/1512.00567) 
-- 구글러의 비애
-    - 2014년에 1등한건 우린데 왜 VGG만 쓰나? (그럼 좀 쉽게 만들던가!)
-    - VGG는 연산량이 많는데... 왜?? (그럼 좀 쉽게 만들던가!)
-    - VGG는 Alexnet보다 파라미터 수가 3배나 많단 말이야! (그럼 좀 쉽게 만들던가!)
-- 구글러의 자기 반성
-    - 내가 생각해봐도 Inception을 응용하기가 쉽지 않다.
-    - "너님은 능력 부족으로 변형같은건 꿈도 못 꿈"을 말하는듯한 느낌이네
+- 구글의 
+    - 2014년에 1등한건 우린데 왜 VGG만 쓰나?
+    - VGG는 연산량이 많는데... 왜?? 
+    - VGG는 Alexnet보다 파라미터 수가 3배나 많다
+- 구글의 반성
+    - 우리가가 생각해봐도 Inception을 응용하기가 쉽지 않다.(응용하기에 너무 어렵다)
+    - 일반사람들의 능력으로는 변형같은건 꿈도 못 
 - 반성하고 다른 모델을 고려해본다.
-    - VGG가 사용한 **오로지 3x3 Conv 필터만 사용** 이 예상외로 효과가 좋은가보다.
+    - VGG가 사용한 **오로지 3x3 Conv 필터만 사용** 이 예상외로 효과가 좋은가보다.
     - Conv 연산이 아무리 Sparsity 를 높인다고 하나 여전히 비싼 연산이긴 하다.
 
 - - -
@@ -148,10 +144,10 @@ link_url: https://arxiv.org/abs/1409.4842
 
 - 이런 모델로 변경했을 때의 2개의 의문?
     - 새롭게 바뀐 결과가 Loss 계산에 영향을 주는가?
-    - Conv 를 두개로 나누게 되면 첫번째 Conv에서 사용하는 Activation 함수는 뭘 사용해야 하는가?
+    - Conv 를 두개로 나누게 되면 첫번째 Conv에서 사용하는 Activation Function 뭘 사용해야 하는가?
 - 실험을 여러번 해봤는데 결과는 꽤 괜찮다.
-    - 성능에는 문제가 없다.
-    - Activation은 Relu, Linear 모두 테스트. Relu가 약간 더 좋다.
+    - 성능에는 문제가 없다.
+    - Activation은 Relu, Linear 모두 테스트. Relu가 약간 더 좋다.
 
 - 이게 Inception.v2 인가?
     - 꼭 그런건 아니고 이 뒤에 소개될 이런 잡다한 기술 몇 개를 묶어 Inception.v2 로 명명한다.
@@ -204,7 +200,7 @@ link_url: https://arxiv.org/abs/1409.4842
 ![figure.11]({{ site.baseurl }}/images/{{ page.group }}/f11.png){:class="center-block" height="300px"}
 
 - 대단한 것은 아니고 두개를 병렬로 수행한 뒤 합치는 것. (먼저 오른쪽 그림을 보자)
-- 이러면 연산량은 좀 줄이면서 Conv 레이어를 통해 Representational Bottleneck을 줄인다.
+- 이러면 연산량은 좀 줄이면서 Conv Layer를 통해 Representational Bottleneck을 줄인다.
 - 이걸 대충 변경한 모델이 왼쪽이라고 생각해도 된다.
 
 ### Inception.v2 
@@ -219,8 +215,8 @@ link_url: https://arxiv.org/abs/1409.4842
 
 ![figure.13]({{ site.baseurl }}/images/{{ page.group }}/f13.png){:class="center-block" height="300px"}
 
-- 잘 보면 레이어 앞단은 기존 conv 레이어와 다를 바 없다. (stem 레이어)
-- 중간부터 앞서 설명한 기본 inception 레이어 들이 등장한다.
+- 잘 보면 Layer 앞단은 기존 conv Layer와 다를 바 없다. (stem Layer)
+- 중간부터 앞서 설명한 기본 inception Layer 들이 등장한다.
 - 중간 아래에는 figure 5, 6, 7 라고 표기되어 이것은 앞서 설명한 여러 기법들을 차례차레 적용한 것이다.
 - 친절하게 다시 그림으로 정리해본다.
     
@@ -242,17 +238,15 @@ link_url: https://arxiv.org/abs/1409.4842
         - 논문에 자세히 나와있긴 한데 간단히 설명하자면 Target 값을 one-hot encoding을 사용하는 것이 아니라,
         - 값이 0 인 레이블에 대해서도 아주 작은 값 \\(e\\) 를 배분하고 정답은 대충 \\(1 - (n-1)*e\\) 로 값을 반영하는 것이다.
     - **Factorized 7-7**
-        - 이게 좀 아리까리한게 맨 앞단 conv 7x7 레이어를 (3x3)-(3x3) 2 레이어로 Factorization 한 것이라고 한다. (앞에서 설명한 것이다.)
-        - 그런데 v2 레이어 표를 보면 이미 적용되어 있는 것 같기도 해서 혼동이...
-        - 어쨋거나 이를 적용했다고 한다. 일단 넘어가자.
+        - 맨 앞단 conv 7x7 Layer를 (3x3)-(3x3) 2 Layer로 Factorization 한 것이라고 한다. (앞에서 설명한 것이다.)
     - **BN-auxiliary**
-        - 마지막 Fully Conntected 레이어에 Batch Normalization(BN)을 적용한다.
+        - 마지막 Fully Conntected Layer에 Batch Normalization(BN)을 적용한다.
 - 이를 모두 적용한게 Inception.v3 되겠다.
-- 최종 결과값만 보자.
+- 최종 결과값 보자.
 
 ![figure.16]({{ site.baseurl }}/images/{{ page.group }}/f16.png){:class="center-block" height="150px"}
 
-- 뭐 성능은 좋다 한다.
+- 성능이 좋다.
 
 #### 참고사항
 
@@ -264,11 +258,11 @@ link_url: https://arxiv.org/abs/1409.4842
 
 - 관련 논문 : [Inception-v4, Inception-RestNet and the Impact of Residual Connections on Learning](http://arxiv.org/abs/1602.07261)
 - 2015년 혜성과 같이 등장한 ResNet 을 자연스럽게 자신들의 Inception에 붙여보려는 시도.
-    - 그런데 이건 존심의 문제인지 Inception.v4 에 반영된 것이 아니라 Inception-resnet 이라는 별도의 모델로 작성.
+    - 그런데 이건 Inception.v4 에 반영된 것이 아니라 Inception-resnet 이라는 별도의 모델로 작성.
     - Inception.v4 는 기존의 Inception.v3 모델에 몇 가지 기능을 추가시켜 업그레이드한 모델.
     - 따라서 이 논문은 Inception.v4 와 Inception-resnet 둘을 다루고 있다.
         - 특히나 resnet 을 도입한 모델을 Inception-resnet 이라 명명한다.
-        - 마찬가지로 이 버전도 Inception-resnet.v1, Inception-resnet.v2 와 같이 별도의 버저닝을 가져간다.
+        - 마찬가지로 이 버전도 Inception-resnet.v1, Inception-resnet.v2 와 같이 별도의 Versioning을 가져간다.
     - 실제로는 ad-hoc한 모델로 이 모델의 한계점을 이야기하고 있음.
 - 관련 작업들.
     - TensorFlow를 언급
@@ -276,15 +270,15 @@ link_url: https://arxiv.org/abs/1409.4842
         - TensorFlow로 전환 후 유연한 모델을 얻게 됨.
     - 뒤에 나올 그림들을 살펴보면 Inception-v4 가 어떤 모델인지 알수 있게 될 것이다.
 - Residual connections
-    - 사실 깊은 망을 학습할 경우 (이미지 인식 분야에서) 이게 꼭 필요한 것인지는 우리(구글러)끼리 논쟁 중. 
+    - 사실 깊은 망을 학습할 경우 (이미지 인식 분야에서) 이게 꼭 필요한 것인지는 구글에서도 논쟁 중. 
     - 근데 확실히 학습 속도가 빨라진다. 그건 장점.
-    - Residual connection 이 뭔지 모르는 사람을 위한 그림. 아래를 참고하자.
+    -  아래는 Residual connection 참고 그림.
 
 ![figure.17]({{ site.baseurl }}/images/{{ page.group }}/f17.png){:class="center-block" height="500px"}
 
 - 일단 첫번째 그림이 가장 간단한 형태의 residual-connection을 의미.
 - 두번째는 1x1 conv 를 추가하여 연산량을 줄인 residual-connection을 나타낸다.
-- 어쨌거나 Residual 의 개념은 이전 몇 단계 전 레이어의 결과를 현재 레이어의 결과와 합쳐 내보내는 것을 의미한다.
+- 어쨌거나 Residual 의 개념은 이전 몇 단계 전 Layer의 결과를 현재 Layer의 결과와 합쳐 내보내는 것을 의미한다.
 
 
 ### Inception-v4. , inception-resnet-v2
@@ -293,7 +287,7 @@ link_url: https://arxiv.org/abs/1409.4842
 
 ![figure.18]({{ site.baseurl }}/images/{{ page.group }}/f18.png){:class="center-block" height="600px"}
 
-- inception-v3 와 마찬가지로 거의 유사한 형태의 net 을 구성하고 있지만 세부적인 inception 레이어의 모양이 달라진다.
+- inception-v3 와 마찬가지로 거의 유사한 형태의 net 을 구성하고 있지만 세부적인 inception Layer의 모양이 달라진다.
 - 이건 지금부터 확인해 볼 것이다.
 
 - - -
@@ -310,7 +304,7 @@ link_url: https://arxiv.org/abs/1409.4842
 
 #### Stem Layer
 
-- Inception.v3 에서 앞단의 Conv 레이어를 stem 영역이라고 부른다고 이미 이야기했다.
+- Inception.v3 에서 앞단의 Conv Layer를 stem 영역이라고 부른다고 이미 이야기했다.
 - Inception.v4 에서는 이 부분을 약간 손봤다.
     - 그리고 미리 이야기하지만 Inception-resnet.v2 버전에서도 Stem 영역은 동일하게 이 구조를 사용한다.
 - 먼저 stem 영역의 그림을 보자.
@@ -318,10 +312,8 @@ link_url: https://arxiv.org/abs/1409.4842
 ![figure.19]({{ site.baseurl }}/images/{{ page.group }}/f19.png){:class="center-block" height="600px"}
 
 - 이런 구조가 나오게 된 배경 지식은 이미 Inception.v3 에서 다루었고, 다만 Inception.v4 에서는 앞단의 영역에도 이런 모델이 추가로 차용되어 있다고 생각하면 된다.
-- 아마도 이것저것 테스트해보다가 결과가 더 좋게 나오기 때문에 이를 채용한 것 같다.
-
+- 아마도 이것저것 테스트해보다가 결과가 더 좋게 나오기 때문에 이를 채용한 것으로 
 - - -
-
 #### 4 x Inception-A
 
 ![figure.20]({{ site.baseurl }}/images/{{ page.group }}/f20.png){:class="center-block" height="250px"}
